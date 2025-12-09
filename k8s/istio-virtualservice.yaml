@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: simple-app-vs
+  namespace: canary-demo
+  labels:
+    app: simple-app
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - simple-app-gateway
+  http:
+  # Header-based routing for canary testing (takes precedence)
+  - match:
+    - headers:
+        canary:
+          exact: "true"
+    route:
+    - destination:
+        host: simple-app
+        subset: canary
+      weight: 100
+    fault:
+      delay:
+        percentage:
+          value: 0.1
+        fixedDelay: 5s
+  # Weight-based traffic splitting (80% stable, 20% canary)
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: simple-app
+        subset: stable
+      weight: 80
+    - destination:
+        host: simple-app
+        subset: canary
+      weight: 20
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+      retryOn: gateway-error,connect-failure,refused-stream

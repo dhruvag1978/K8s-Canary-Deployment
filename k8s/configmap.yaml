@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-app-config
+  namespace: canary-demo
+  labels:
+    app: simple-app
+data:
+  # Application configuration
+  LOG_LEVEL: "info"
+  NODE_ENV: "production"
+  ENABLE_METRICS: "true"
+  METRICS_PORT: "3001"
+  
+  # Feature flags for canary testing
+  FEATURE_NEW_UI: "false"
+  FEATURE_ENHANCED_LOGGING: "true"
+  FEATURE_RATE_LIMITING: "false"
+  
+  # Performance settings
+  MAX_CONNECTIONS: "1000"
+  REQUEST_TIMEOUT: "30000"
+  KEEP_ALIVE_TIMEOUT: "5000"
+  
+  # Monitoring configuration
+  HEALTH_CHECK_INTERVAL: "30"
+  METRICS_COLLECTION_INTERVAL: "10"
+  
+  # Application metadata
+  APP_NAME: "simple-canary-app"
+  DEPLOYMENT_ENVIRONMENT: "production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-app-config-canary
+  namespace: canary-demo
+  labels:
+    app: simple-app
+    version: canary
+data:
+  # Application configuration (same as stable)
+  LOG_LEVEL: "debug"
+  NODE_ENV: "production"
+  ENABLE_METRICS: "true"
+  METRICS_PORT: "3001"
+  
+  # Feature flags for canary testing (different from stable)
+  FEATURE_NEW_UI: "true"
+  FEATURE_ENHANCED_LOGGING: "true"
+  FEATURE_RATE_LIMITING: "true"
+  
+  # Performance settings
+  MAX_CONNECTIONS: "1000"
+  REQUEST_TIMEOUT: "30000"
+  KEEP_ALIVE_TIMEOUT: "5000"
+  
+  # Monitoring configuration
+  HEALTH_CHECK_INTERVAL: "30"
+  METRICS_COLLECTION_INTERVAL: "5"
+  
+  # Application metadata
+  APP_NAME: "simple-canary-app"
+  DEPLOYMENT_ENVIRONMENT: "canary"

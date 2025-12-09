@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-app
+  namespace: canary-demo
+  labels:
+    app: simple-app
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+    name: http
+  selector:
+    app: simple-app
